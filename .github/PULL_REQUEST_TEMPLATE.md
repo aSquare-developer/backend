@@ -1,14 +1,18 @@
-<!---
+## Issue
 
-**PLEASE NOTE:**
+- Closes #...
 
-This is only a issue tracker for issues related to the CakePHP Application Skeleton.
-For CakePHP Framework issues please use this [issue tracker](https://github.com/cakephp/cakephp/issues).
+## Checklist
 
-Describe the big picture of your changes here to communicate to the maintainers why we should accept this pull request. If it fixes a bug or resolves a feature request, be sure to link to that issue.
+- [ ] **Linked issue**: This PR is linked to the correct issue.
+- [ ] **Scope**: Change is focused and not mixing unrelated refactors.
+- [ ] **Similar places**: All similar places in the codebase are updated.
+- [ ] **Tests**: Tests are added or updated as needed.
+- [ ] **Local tests**: `composer test` passes locally.
+- [ ] **CI**: GitHub Actions is green for this PR.
+- [ ] **Breaking changes**: Any breaking changes are clearly noted in the issue.
+- [ ] **TODO & FIXME**: Any TODO/FIXME comments are clear, necessary, and (where applicable) linked to an issue.
 
-The best way to propose a feature is to open an issue first and discuss your ideas there before implementing them.
+## Notes (optional)
 
-Always follow the [contribution guidelines](https://github.com/cakephp/cakephp/blob/master/.github/CONTRIBUTING.md) guidelines when submitting a pull request. In particular, make sure existing tests still pass, and add tests for all new behavior. When fixing a bug, you may want to add a test to verify the fix.
-
--->
+Anything important for reviewers that is not obvious from the linked issue.
