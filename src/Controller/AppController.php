@@ -9,14 +9,15 @@ declare(strict_types=1);
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link      https://cakephp.org CakePHP(tm) Project
- * @since     0.2.9
- * @license   https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @since         0.2.9
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Event\EventInterface;
 
 /**
  * Application Controller
@@ -31,22 +32,34 @@ class AppController extends Controller
     /**
      * Initialization hook method.
      *
-     * Use this method to add common initialization code like loading components.
-     *
-     * e.g. `$this->loadComponent('FormProtection');`
-     *
      * @return void
      */
     public function initialize(): void
     {
         parent::initialize();
 
-        $this->loadComponent('Flash');
+        /*
+         * Headless seadistus:
+         * Sunnime rakenduse kasutama JsonView klassi, et vältida templates/ kausta kasutamist.
+         */
+        $this->viewBuilder()->setClassName('Json');
+    }
+
+    /**
+     * beforeRender meetod käivitub vahetult enne vastuse saatmist.
+     * Siin automatiseerime andmete JSON-iks muutmise.
+     *
+     * @param \Cake\Event\EventInterface $event Event.
+     * @return void
+     */
+    public function beforeRender(EventInterface $event)
+    {
+        parent::beforeRender($event);
 
         /*
-         * Enable the following component for recommended CakePHP form protection settings.
-         * see https://book.cakephp.org/5/en/controllers/components/form-protection.html
+         * See rida ütleb CakePHP-le, et kõik kontrolleris set() meetodiga
+         * määratud muutujad tuleb automaatselt JSON-vastusesse lisada.
          */
-        //$this->loadComponent('FormProtection');
+        $this->viewBuilder()->setOption('serialize', true);
     }
 }
