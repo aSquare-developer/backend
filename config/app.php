@@ -338,6 +338,8 @@ return [
             'cacheMetadata' => true,
             'quoteIdentifiers' => false,
             'log' => false,
+            'database' => env('DB_TEST_DATABASE', 'test_myapp'),
+            'url' => env('DATABASE_TEST_URL', null),
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
         ],
     ],
