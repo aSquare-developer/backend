@@ -1,58 +1,94 @@
-# CakePHP Application Skeleton
+## BlogiBlogi Backend – Headless API (CakePHP 5)
 
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=5.x)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+This repository contains the **backend REST API** for BlogiBlogi, built with [CakePHP](https://cakephp.org) 5.x.
+It is designed as a **headless JSON API** to be consumed by a separate frontend (e.g. Next.js).
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 5.x.
+## Requirements
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+- PHP 8.2+  
+- Composer  
+- A database supported by CakePHP (MySQL/MariaDB, PostgreSQL, etc.)  
+- Web server (Apache/Nginx) or PHP built‑in server for local development
 
 ## Installation
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+1. **Clone the repository**
 
-If Composer is installed globally, run
+   ```bash
+   git clone https://github.com/NTAVA/backend.git
+   cd backend
+   ```
 
-```bash
-composer create-project --prefer-dist cakephp/app
-```
+2. **Install PHP dependencies**
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+   ```bash
+   composer install
+   ```
 
-```bash
-composer create-project --prefer-dist cakephp/app myapp
-```
+3. **Configure environment**
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+   Copy the local config file if it does not exist yet and adjust it:
+
+   ```bash
+   cp config/app_local.example.php config/app_local.php
+   ```
+
+   Then edit `config/app_local.php` and set:
+
+   - database connection under `'Datasources'`
+   - any other environment‑specific options you need
+
+4. **Set writable directories**
+
+   Make sure the following directories are writable by the web server user:
+
+   - `logs/`
+   - `tmp/`
+
+## Running the API
+
+### Using the built‑in server (local development)
+
+From the project root:
 
 ```bash
 bin/cake server -p 8765
 ```
 
-Then visit `http://localhost:8765` to see the welcome page.
+The API will be available at:
 
-## Demo app
+- `http://localhost:8765/` – health check / welcome JSON
+- `http://localhost:8765/api/...` – future API endpoints
 
-Check out the [5.x-demo branch](https://github.com/cakephp/app/tree/5.x-demo), which contains demo migrations and a seeder.
-See the [README](https://github.com/cakephp/app/blob/5.x-demo/README.md) on how to get it running.
+### Using Apache / Nginx
 
-## Update
+Point your virtual host document root to the `webroot/` directory and ensure
+URL rewriting is enabled so that all requests go through `webroot/index.php`.
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
+## API Overview
 
-## Configuration
+- Root route `/` is mapped to `ApiController::index()` and returns a simple JSON
+  payload confirming that the API is online:
 
-Read and edit the environment specific `config/app_local.php` and set up the
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
+  ```json
+  {
+    "message": "Welcome to BlogiBlogi API",
+    "version": "1.0.0",
+    "status": "online"
+  }
+  ```
 
-## Layout
+- All future resources will live under `/api` (see `config/routes.php`).
+- `AppController` is configured to:
+  - use `JsonView` globally
+  - automatically serialize variables set via `$this->set()` into JSON
+- `ErrorController` returns errors as JSON instead of HTML templates.
 
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+## Development notes
+
+- Global middleware is defined in `src/Application.php` (routing, error handling, JSON body parsing).
+- Shared controller logic and JSON configuration lives in `src/Controller/AppController.php`.
+- API‑specific controllers are placed under `src/Controller/` (e.g. `ApiController`).
+
+Feel free to adapt this README as the API grows (add endpoints, authentication,
+versioning details, etc.).
