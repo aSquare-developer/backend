@@ -49,10 +49,10 @@ class AppController extends Controller
      * beforeRender meetod käivitub vahetult enne vastuse saatmist.
      * Siin automatiseerime andmete JSON-iks muutmise.
      *
-     * @param \Cake\Event\EventInterface $event Event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
      * @return void
      */
-    public function beforeRender(EventInterface $event)
+    public function beforeRender(EventInterface $event): void
     {
         parent::beforeRender($event);
 

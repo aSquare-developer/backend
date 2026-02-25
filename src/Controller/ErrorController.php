@@ -22,6 +22,9 @@ class ErrorController extends AppController
 
     /**
      * beforeRender käivitub vahetult enne vea väljastamist.
+     *
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
+     * @return void
      */
     public function beforeRender(EventInterface $event): void
     {

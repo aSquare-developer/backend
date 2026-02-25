@@ -18,6 +18,8 @@ use Cake\Routing\Middleware\RoutingMiddleware;
  * Application setup class.
  *
  * See defines the bootstrapping logic and middleware layers for the Headless API.
+ *
+ * @extends \Cake\Http\BaseApplication<\App\Application>
  */
 class Application extends BaseApplication
 {
@@ -30,7 +32,9 @@ class Application extends BaseApplication
         parent::bootstrap();
 
         // By default, does not allow fallback classes.
-        FactoryLocator::add('Table', (new TableLocator())->allowFallbackClass(false));
+        /** @var \Cake\Datasource\Locator\LocatorInterface<\Cake\Datasource\RepositoryInterface> $tableLocator */
+        $tableLocator = (new TableLocator())->allowFallbackClass(false);
+        FactoryLocator::add('Table', $tableLocator);
     }
 
     /**
