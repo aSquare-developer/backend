@@ -19,4 +19,3 @@ class ApiController extends AppController
         ]);
     }
 }
-
