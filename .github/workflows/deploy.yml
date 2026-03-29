@@ -1,4 +1,4 @@
-name: Deploy CakePHP via SSH
+name: Deploy
 
 on:
   push:
@@ -9,25 +9,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🔐 Setup SSH
+      - name: SSH deploy
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: 🚀 Deploy on server
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd ~/backend
-
-            git pull origin main
-
-            composer install --no-dev --optimize-autoloader
-
-            bin/cake migrations migrate || true
-
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            cd ~/backend &&
+            git pull &&
+            composer install --no-dev --optimize-autoloader &&
             bin/cake cache clear_all
-
-            exit
-          EOF
+          "
