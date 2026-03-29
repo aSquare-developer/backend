@@ -1,4 +1,4 @@
-name: Deploy CakePHP to Zone.ee
+name: Deploy CakePHP via SSH
 
 on:
   push:
@@ -9,27 +9,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-
-      - name: 🐘 Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-
-      - name: 📦 Install dependencies
-        run: composer install --no-dev --optimize-autoloader
-
-      - name: 🧹 Cleanup
+      - name: 🔐 Setup SSH
         run: |
-          rm -rf .git
-          rm -rf tests
-          rm -rf tmp/cache/*
-      
-      - name: 🚀 Deploy via SFTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_TARGET_DIR }}
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: 🚀 Deploy on server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ~/backend
+
+            git pull origin main
+
+            composer install --no-dev --optimize-autoloader
+
+            bin/cake migrations migrate || true
+
+            bin/cake cache clear_all
+
+            exit
+          EOF
